@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jonathan Developer - SmSBomber</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #111827;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #e5e7eb;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    @keyframes slideInRight {
+      0% {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shineMove {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    /* Cam efektli kutular */
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 1rem;
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      color: #e5e7eb;
+    }
+
+    .shine {
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, transparent, rgba(255 255 255 / 0.6), transparent);
+      filter: blur(7px);
+      opacity: 0.7;
+      pointer-events: none;
+      border-radius: 1rem;
+      animation: shineMove 2.5s linear infinite;
+      z-index: 10;
+    }
+
+    /* Header */
+    header {
+      background: rgba(17, 24, 39, 0.6);
+      backdrop-filter: saturate(180%) blur(16px);
+      -webkit-backdrop-filter: saturate(180%) blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1.5rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    header > div:first-child {
+      animation: slideInRight 0.8s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    header nav {
+      animation: slideInLeft 0.8s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 1.75rem;
+    }
+
+    header nav a {
+      color: #e5e7eb;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    header nav a:hover {
+      transform: scale(1.1);
+    }
+
+    header nav a[aria-label="Discord"]:hover {
+      color: #7289da;
+    }
+
+    header nav a[aria-label="Instagram"]:hover {
+      color: #e1306c;
+    }
+
+    /* Ürün fotoğraf kutusu */
+    .glass-container {
+      position: relative;
+      padding: 2rem;
+      border-radius: 1rem;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      opacity: 0.9;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+      box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .glass-container:hover {
+      box-shadow: 0 12px 48px rgba(255, 255, 255, 0.15);
+    }
+
+    .glass-container img {
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .glass-container img:hover {
+      transform: scale(1.03);
+    }
+
+    /* Ürün başlığı */
+    .product-title {
+      animation: slideInRight 1s ease forwards;
+      opacity: 0;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      color: #f87171; /* Tailwind kırmızı */
+      text-shadow: 0 0 8px rgba(248, 113, 113, 0.7);
+    }
+
+    /* Ürün açıklaması */
+    .product-desc {
+      animation: slideInLeft 1.1s ease forwards;
+      opacity: 0;
+      color: #d1d5db;
+      font-size: 1.125rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* Özellik listesi */
+    .features-list {
+      animation: slideInLeft 1.2s ease forwards;
+      opacity: 0;
+      color: #d1d5db;
+      margin-bottom: 2rem;
+      list-style-type: disc;
+      padding-left: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .features-list li strong {
+      color: #f87171;
+    }
+
+    /* Satın al butonu */
+    #purchaseButton {
+      animation: fadeInUp 1.4s ease forwards;
+      opacity: 0;
+      padding: 1.25rem 3rem;
+      border-radius: 1rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
+      border: none;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease, transform 0.3s ease, background 0.3s ease;
+      user-select: none;
+    }
+
+    #purchaseButton:hover {
+      box-shadow: 0 0 25px rgba(255, 50, 50, 0.8), 0 0 50px rgba(220, 38, 38, 0.5);
+      background: linear-gradient(135deg, #f87171, #b91c1c);
+      transform: scale(1.05);
+    }
+
+    /* Modal arka plan ve kutu */
+    #socialMediaModal {
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+    }
+
+    #socialMediaModal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #socialMediaModal > div {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 1rem;
+      padding: 3rem 2rem;
+      max-width: 28rem;
+      color: #111827;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    #socialMediaModal.active > div {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #socialMediaModal h2 {
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    #socialMediaModal p {
+      margin-bottom: 2rem;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    #socialMediaModal a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    #socialMediaModal a:hover {
+      color: #dc2626;
+    }
+
+    #socialMediaModal button {
+      margin-top: 2rem;
+      background: #dc2626;
+      color: white;
+      border-radius: 1rem;
+      padding: 1rem 2rem;
+      font-weight: 700;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      user-select: none;
+    }
+
+    #socialMediaModal button:hover {
+      background: #b91c1c;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      text-align: center;
+      color: #cbd5e1;
+      padding: 1.5rem 0;
+      font-weight: 300;
+      user-select: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .glass-container {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+      }
+
+      .product-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="glass shadow-md">
+    <div>
+      <div
+        class="w-9 h-9 bg-red-600 text-white flex items-center justify-center rounded-full font-bold text-lg select-none">
+        JD
+      </div>
+      <span class="text-2xl font-semibold tracking-wide text-white">Jonathan Developer</span>
+    </div>
+    <nav>
+      <a href="https://discord.com" aria-label="Discord" target="_blank" rel="noopener noreferrer">
+        <i class="ph ph-discord-logo"></i>
+      </a>
+      <a href="https://www.instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <i class="ph ph-instagram-logo"></i>
+      </a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <section class="py-16 px-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+    <!-- Sol: Ürün Fotoğrafı -->
+    <div class="glass-container glass flex justify-center">
+      <a href="https://hizliresim.com/1dt0cyh" target="_blank" rel="noopener noreferrer">
+        <img src="https://i.hizliresim.com/1dt0cyh.png" alt="Resim Yükle" />
+      </a>
+      <div class="shine"></div>
+    </div>
+
+    <!-- Sağ: Ürün Detayları -->
+    <div class="glass-container glass relative flex flex-col justify-between">
+      <h2 class="product-title">SmSBomber</h2>
+      <p class="product-desc">
+        Ürün Kiralıktır. 1 saatlik ardı ardına giden SMS’ler telefonu yavaşlatması ve insanları sinir etmek için
+        yapılmıştır.
+      </p>
+      <ul class="features-list">
+        <li><strong>Karakter sınırı:</strong> 20 karakter</li>
+        <li><strong>SMS Adedi:</strong> 50 adet</li>
+        <li><strong>Ürün Durumu:</strong> Kiralık</li>
+      </ul>
+      <button id="purchaseButton" type="button">Satın Al</button>
+    </div>
+  </section>
+
+  <!-- Modal -->
+  <div id="socialMediaModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="glass">
+      <h2 id="modalTitle">İletişim Bilgileri</h2>
+      <p id="modalDesc">Satın alma işleminiz için lütfen aşağıdaki sosyal medya adreslerinden bizimle iletişime geçin.</p>
+      <a href="https://discord.gg/yourdiscord" target="_blank" rel="noopener noreferrer">
+        <i class="ph ph-discord-logo text-2xl" style="color:#7289da;"></i> Discord: elpatron024
+      </a>
+      <a href="https://www.instagram.com/jonathanthompson011?igsh=MWxqa2hzd3Y4dHN2cQ==" target="_blank" rel="noopener noreferrer">
+        <i class="ph ph-instagram-logo text-2xl" style="color:#e1306c;"></i> Instagram: @jonathanthompson011
+      </a>
+      <button id="closeModalButton" type="button">Kapat</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Tüm hakları saklıdır © 2025 Jonathan Developer
+  </footer>
+
+  <script>
+    const purchaseButton = document.getElementById('purchaseButton');
+    const modal = document.getElementById('socialMediaModal');
+    const closeModalButton = document.getElementById('closeModalButton');
+
+    purchaseButton.addEventListener('click', () => {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeModalButton.addEventListener('click', () => {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    // Modal dışına tıklayınca kapat
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+
+</body>
+
+</html>
